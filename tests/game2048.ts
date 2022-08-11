@@ -17,7 +17,7 @@ async function play(program: Program<Game2048>, game, player,
   const gameState = await program.account.game.fetch(game);
   expect(gameState.turn).to.equal(expectedTurn);
   expect(gameState.state).to.eql(expectedGameState);
-  
+
   expect(gameState.board)
     .to
     .eql(expectedBoard);
@@ -47,9 +47,9 @@ describe("game2048", () => {
     expect(gameState.board)
       .to
       .eql([[0, 0, 0, 0],
-            [0, 0, 2, 0],
-            [0, 0, 2, 0],
-            [0, 0, 0, 0]]);
+      [0, 0, 2, 0],
+      [0, 0, 2, 0],
+      [0, 0, 0, 0]]);
   });
 
   it('Left move', async () => {
@@ -69,38 +69,38 @@ describe("game2048", () => {
     expect(gameState.state).to.eql({ active: {} });
     expect(gameState.board)
       .to
-      .eql([[0, 0, 0, 0],
-            [0, 0, 2, 0],
-            [0, 0, 2, 0],
-            [0, 0, 0, 0]]);
+      .eql([
+        [0, 0, 0, 0],
+        [0, 0, 2, 0],
+        [0, 0, 2, 0],
+        [0, 0, 0, 0]]);
 
     await play(
       program,
       gameKeypair.publicKey,
       player,
-      {left: {}},
+      { left: {} },
       2,
       { active: {}, },
       [
-         [0, 2, 0, 0],
-         [2, 0, 0, 0],
-         [2, 0, 0, 0],
-         [0, 0, 0, 0]
+        [0, 2, 0, 0],
+        [2, 0, 0, 0],
+        [2, 0, 0, 0],
+        [0, 0, 0, 0]
       ]
     );
-
     await play(
       program,
       gameKeypair.publicKey,
       player,
-      {left: {}},
+      { left: {} },
       3,
       { active: {}, },
       [
-         [2, 0, 0, 2],
-         [2, 0, 0, 0],
-         [2, 0, 0, 0],
-         [0, 0, 0, 0]
+        [2, 0, 0, 2],
+        [2, 0, 0, 0],
+        [2, 0, 0, 0],
+        [0, 0, 0, 0]
       ]
     );
 
@@ -108,17 +108,317 @@ describe("game2048", () => {
       program,
       gameKeypair.publicKey,
       player,
-      {left: {}},
+      { left: {} },
       4,
       { active: {}, },
       [
-         [4, 0, 0, 0],
-         [2, 2, 0, 0],
-         [2, 0, 0, 0],
-         [0, 0, 0, 0]
+        [4, 0, 0, 0],
+        [2, 2, 0, 0],
+        [2, 0, 0, 0],
+        [0, 0, 0, 0]
       ]
     );
   });
 
+  it('Right move', async () => {
+    const gameKeypair = anchor.web3.Keypair.generate();
+    const player = (program.provider as anchor.AnchorProvider).wallet;
+    await program.methods
+      .setupGame()
+      .accounts({
+        game: gameKeypair.publicKey,
+        player: player.publicKey,
+      })
+      .signers([gameKeypair])
+      .rpc();
 
+    let gameState = await program.account.game.fetch(gameKeypair.publicKey);
+    expect(gameState.turn).to.equal(1);
+    expect(gameState.state).to.eql({ active: {} });
+    expect(gameState.board)
+      .to
+      .eql([
+        [0, 0, 0, 0],
+        [0, 0, 2, 0],
+        [0, 0, 2, 0],
+        [0, 0, 0, 0]]);
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { right: {} },
+      2,
+      { active: {}, },
+      [
+        [0, 2, 0, 0],
+        [0, 0, 0, 2],
+        [0, 0, 0, 2],
+        [0, 0, 0, 0]
+      ]
+    );
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { right: {} },
+      3,
+      { active: {}, },
+      [
+        [0, 0, 2, 2],
+        [0, 0, 0, 2],
+        [0, 0, 0, 2],
+        [0, 0, 0, 0]
+      ]
+    );
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { right: {} },
+      4,
+      { active: {}, },
+      [
+        [0, 0, 0, 4],
+        [2, 0, 0, 2],
+        [0, 0, 0, 2],
+        [0, 0, 0, 0]
+      ]
+    );
+  });
+
+  it('Down move', async () => {
+    const gameKeypair = anchor.web3.Keypair.generate();
+    const player = (program.provider as anchor.AnchorProvider).wallet;
+    await program.methods
+      .setupGame()
+      .accounts({
+        game: gameKeypair.publicKey,
+        player: player.publicKey,
+      })
+      .signers([gameKeypair])
+      .rpc();
+
+    let gameState = await program.account.game.fetch(gameKeypair.publicKey);
+    expect(gameState.turn).to.equal(1);
+    expect(gameState.state).to.eql({ active: {} });
+    expect(gameState.board)
+      .to
+      .eql([
+        [0, 0, 0, 0],
+        [0, 0, 2, 0],
+        [0, 0, 2, 0],
+        [0, 0, 0, 0]]);
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { down: {} },
+      2,
+      { active: {}, },
+      [
+        [0, 2, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 4, 0]
+      ]
+    );
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { down: {} },
+      3,
+      { active: {}, },
+      [
+        [0, 0, 2, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 2, 4, 0]
+      ]
+    );
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { down: {} },
+      4,
+      { active: {}, },
+      [
+        [0, 0, 0, 2],
+        [0, 0, 0, 0],
+        [0, 0, 2, 0],
+        [0, 2, 4, 0]
+      ]
+    );
+  })
+
+  it('Up move', async () => {
+    const gameKeypair = anchor.web3.Keypair.generate();
+    const player = (program.provider as anchor.AnchorProvider).wallet;
+    await program.methods
+      .setupGame()
+      .accounts({
+        game: gameKeypair.publicKey,
+        player: player.publicKey,
+      })
+      .signers([gameKeypair])
+      .rpc();
+
+    let gameState = await program.account.game.fetch(gameKeypair.publicKey);
+    expect(gameState.turn).to.equal(1);
+    expect(gameState.state).to.eql({ active: {} });
+    expect(gameState.board)
+      .to
+      .eql([
+        [0, 0, 0, 0],
+        [0, 0, 2, 0],
+        [0, 0, 2, 0],
+        [0, 0, 0, 0]]);
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { up: {} },
+      2,
+      { active: {}, },
+      [
+        [0, 2, 4, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+      ]
+    );
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { up: {} },
+      3,
+      { active: {}, },
+      [
+        [0, 2, 4, 0],
+        [2, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+      ]
+    );
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { up: {} },
+      4,
+      { active: {}, },
+      [
+        [2, 2, 4, 0],
+        [0, 0, 2, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+      ]
+    );
+  })
+
+  it('All move', async () => {
+    const gameKeypair = anchor.web3.Keypair.generate();
+    const player = (program.provider as anchor.AnchorProvider).wallet;
+    await program.methods
+      .setupGame()
+      .accounts({
+        game: gameKeypair.publicKey,
+        player: player.publicKey,
+      })
+      .signers([gameKeypair])
+      .rpc();
+
+    let gameState = await program.account.game.fetch(gameKeypair.publicKey);
+    expect(gameState.turn).to.equal(1);
+    expect(gameState.state).to.eql({ active: {} });
+    expect(gameState.board)
+      .to
+      .eql([
+        [0, 0, 0, 0],
+        [0, 0, 2, 0],
+        [0, 0, 2, 0],
+        [0, 0, 0, 0]]);
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { up: {} },
+      2,
+      { active: {}, },
+      [
+        [0, 2, 4, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+      ]
+    );
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { right: {} },
+      3,
+      { active: {}, },
+      [
+        [0, 0, 2, 4],
+        [2, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+      ]
+    );
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { down: {} },
+      4,
+      { active: {}, },
+      [
+        [0, 0, 0, 2],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [2, 0, 2, 4]
+      ]
+    );
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { right: {} },
+      5,
+      { active: {}, },
+      [
+        [0, 0, 0, 2],
+        [0, 2, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 4, 4]
+      ]
+    );
+
+    await play(
+      program,
+      gameKeypair.publicKey,
+      player,
+      { right: {} },
+      6,
+      { active: {}, },
+      [
+        [0, 0, 0, 2],
+        [0, 0, 2, 2],
+        [0, 0, 0, 0],
+        [0, 0, 0, 8]
+      ]
+    );
+  })
 });
